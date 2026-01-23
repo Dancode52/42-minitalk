@@ -1,45 +1,43 @@
 #include "../Headers/server.h"
 #include <stdio.h>
+#include <unistd.h>
 
-int globali = 0;
 
-void handler1()
+void handler(int signum)
 {
-	globali++;
-	//write(1, "we got it boss! \n", 18);
-	//*track += 1;
-}
+	//write(1, "and it is good! \n", 18);
+	static char res;
+	static int	counter;
 
-void handler2()
-{
-	write(1, "and it is good! \n", 18);
-}
-
-int	main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
-	__pid_t id;
-	//void	(*f)(int *);
-	//f = &handler1;
-	//struct sigaction act;
-//	act.sa_handler = handler1;
-
-	id =  getpid();
-	printf("The PID is %i\n", id);
-	signal(SIGUSR1, handler1);
-	//sigaction(SIGUSR1, &act, NULL);
-	if (globali == 'H')
+	res <<= 1;
+	if (signum == SIGUSR1)
+		res |= 1;
+	else if (signum == SIGUSR2)
+		res |= 0;
+	counter++;
+	if (counter == 8)
 	{
-		printf("HOORAY!! WE DID IT!\n");
-		return (0);
+		write(1, &res, 1);
+		res = 0;
+		counter = 0;
 	}
-	//sigaction(SIGUSR2, &act, NULL);
-	//signal(SIGUSR2, handler2);
+
+}
+
+int	main()
+{
+	__pid_t pid;
+	struct sigaction sa;
+
+	pid = getpid();
+	printf("The PID is %i\n", pid);
+	sa.sa_handler = handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 	{
-		printf("%i\n", globali);
-		printf("Looping\n");
-		sleep(1);
+		pause();
 	}
 }
