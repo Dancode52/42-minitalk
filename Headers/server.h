@@ -1,4 +1,5 @@
 #define _POSIX_C_SOURCE 1
+#define _XOPEN_SOURCE 600
 #include <unistd.h>
 #include <signal.h>
 
