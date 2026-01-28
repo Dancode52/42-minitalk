@@ -4,7 +4,7 @@ CFILESCLIENT = client.c
 OBJDIR = ./obj
 OFILESSERV = $(CFILES:./server/%.c=$(OBJDIR)/%.o)
 OFILESCLIENT = $(CFILES:./client/%.c=$(OBJDIR)/%.o)
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
 CC = cc
 LIBFT = libft.a
 NAMESERV = server.out
