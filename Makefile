@@ -2,13 +2,13 @@ CFILESSERV = server.c
 CFILESCLIENT = client.c
 
 OBJDIR = ./obj
-OFILESSERV = $(CFILES:./server/%.c=$(OBJDIR)/%.o)
-OFILESCLIENT = $(CFILES:./client/%.c=$(OBJDIR)/%.o)
+OFILESSERV = $(CFILES:./svr/%.c=$(OBJDIR)/%.o)
+OFILESCLIENT = $(CFILES:./clt/%.c=$(OBJDIR)/%.o)
 CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
 CC = cc
 LIBFT = libft.a
-NAMESERV = server.out
-NAMECLIENT = client.out
+NAMESERV = server
+NAMECLIENT = client
 
 all: $(NAMESERV) $(NAMECLIENT)
 
@@ -37,12 +37,12 @@ re: fclean all
 
 $(NAMESERV): directory $(OFILESSERV)
 	@$(MAKE) bonus -C libft/42-Libft
-	@$(CC) $(CFLAGS) ./server/$(CFILESSERV) -o $(NAMESERV) $(LIBFT)
+	@$(CC) $(CFLAGS) ./svr/$(CFILESSERV) -o $(NAMESERV) $(LIBFT)
 	@echo "Look at us go! Making your project with our silly little techno-gremlin hands!"
 
 $(NAMECLIENT): directory $(OFILESCLIENT)
 	@$(MAKE) bonus -C libft/42-Libft
-	@$(CC) $(CFLAGS) ./client/$(CFILESCLIENT) -o $(NAMECLIENT) $(LIBFT)
+	@$(CC) $(CFLAGS) ./clt/$(CFILESCLIENT) -o $(NAMECLIENT) $(LIBFT)
 	@echo "Look at us go! Making your project with our silly little techno-gremlin hands!"
 
 $(OBJDIR)/%.o : %.c

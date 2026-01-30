@@ -4,6 +4,7 @@
 #include "../libft/Headers/libft.h"
 #include <stdio.h>
 
+int g_signalreceived;
 
 int	charchecker(char *check)
 {
@@ -38,6 +39,9 @@ void sendasbits(char *string, int pid, struct sigaction sa)
 			else
 				kill(pid, SIGUSR2);
 			bits++;
+			g_signalreceived = 0;
+			if (g_signalreceived == 0)
+				pause();
 			usleep(100);
 		}
 		i++;
@@ -45,8 +49,8 @@ void sendasbits(char *string, int pid, struct sigaction sa)
 	bits = 0;
 	while (bits < 8)
 	{
-		kill(pid, SIGUSR2);
 		usleep(100);
+		kill(pid, SIGUSR2);
 		bits++;
 	}
 }
@@ -74,6 +78,7 @@ void	sendasbitsredux(char *argv, int pid)
 	char 	*temp;
 	char 	toconvert;
 
+	g_signalreceived = 1;
 	i = 0;
 	temp = (char *)malloc(9);
 	ft_bzero(temp, 9);
@@ -98,6 +103,7 @@ void	handler(int signal)
 	if (signal == 10)
 	{
 		write(1, "message recieved", 17);
+		g_signalreceived = 1;
 	}
 	//exit(EXIT_SUCCESS);
 }

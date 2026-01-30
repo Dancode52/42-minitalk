@@ -72,6 +72,7 @@ void	handler_bonus(int signum, siginfo_t *info, void *ucontext_t)
 			write(1, g_recieved, ft_strlen(g_recieved));
 			write(1, "\n", 1);
 			free(g_recieved);
+			g_recieved = NULL;
 		}
 	}
 }
