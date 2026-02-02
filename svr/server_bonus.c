@@ -30,6 +30,7 @@ char *g_recieved;
 
 // }
 
+
 void	handler_bonus(int signum, siginfo_t *info, void *ucontext_t)
 {
 	static char res;

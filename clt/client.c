@@ -63,10 +63,24 @@ void	sendasbitsredux(char *argv, int pid)
 
 //------------------------------------------------------
 
+void	handler(int signum)
+{
+	(void)signum;	
+	return ;
+}
+
 void sendasbits(char *string, int pid)
 {
 	int i;
 	int bits;
+	struct sigaction sa;
+
+	ft_bzero(&sa, sizeof(sa));
+	//sa.sa_flags = SA_SIGINFO;
+	sa.sa_handler = &handler;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGUSR1, &sa, NULL);
+	//sigaction(SIGUSR2, &sa, NULL);
 
 	i = 0;
 	while (string[i])
@@ -79,23 +93,25 @@ void sendasbits(char *string, int pid)
 			else
 				kill(pid, SIGUSR2);
 			bits++;
-			usleep(300);
+			sleep(1);
 		}
 		i++;
 	}
 	bits = 0;
 	while (bits < 8)
 	{
-		usleep(300);
+		//usleep(250000);
 		kill(pid, SIGUSR2);
 		bits++;
+		sleep(1);
 	}
 }
+
 
 int	main(int argc, char **argv)
 {
 	__pid_t pid;
-	
+
 	if (argc != 3 || charchecker(argv[1]) != 1)
 		return (0);
 	pid = ft_atoi(argv[1]);
