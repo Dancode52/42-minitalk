@@ -6,7 +6,7 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/03 14:05:22 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/03 14:32:35 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	handler(int signum, siginfo_t *info, void *ucontext_t)
 	ft_putendl_fd(g_string, 1);
 	free(g_string);
 	g_string = NULL;
+
 	kill(info->si_pid, SIGUSR1);
 	return ;
 }
