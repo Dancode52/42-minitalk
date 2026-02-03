@@ -82,7 +82,6 @@ void	handler(int signum, siginfo_t *info, void *ucontext_t)
 	ft_putendl_fd(g_string, 1);
 	free(g_string);
 	g_string = NULL;
-
 	kill(info->si_pid, SIGUSR1);
 	return ;
 }
