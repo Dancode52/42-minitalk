@@ -1,10 +1,16 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <signal.h>
-#include "../libft/Headers/libft.h"
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/03 09:15:31 by dlanehar          #+#    #+#             */
+/*   Updated: 2026/02/03 14:15:23 by dlanehar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int g_signalreceived;
+#include "../Headers/server.h"
 
 int	charchecker(char *check)
 {
@@ -21,15 +27,31 @@ int	charchecker(char *check)
 	return (1);
 }
 
-void sendasbits(char *string, int pid, struct sigaction sa)
+void	handler(int signum)
 {
-	int i;
-	int bits;
-	(void)sa;
+	(void)signum;
+	return ;
+}
+
+void	init_sigaction_struct(struct sigaction *structname)
+{
+	ft_bzero(&(*structname), sizeof((*structname)));
+	(*structname).sa_handler = &handler;
+	sigemptyset(&(*structname).sa_mask);
+	sigaction(SIGUSR1, &(*structname), NULL);
+}
+
+void	sendasbits(char *string, int pid)
+{
+	int					i;
+	int					len;
+	struct sigaction	sa;
+	int					bits;
 
 	i = 0;
-	//sigaction(SIGUSR1, &sa, NULL);
-	while (string[i])
+	len = ft_strlen(string);
+	init_sigaction_struct(&sa);
+	while (i <= len)
 	{
 		bits = 0;
 		while (bits < 8)
@@ -39,89 +61,18 @@ void sendasbits(char *string, int pid, struct sigaction sa)
 			else
 				kill(pid, SIGUSR2);
 			bits++;
-			g_signalreceived = 0;
-			if (g_signalreceived == 0)
-				pause();
-			usleep(100);
+			sleep(1);
 		}
 		i++;
 	}
-	bits = 0;
-	while (bits < 8)
-	{
-		usleep(100);
-		kill(pid, SIGUSR2);
-		bits++;
-	}
-}
-//------------------------------------------------------
-
-void	signalsend(char *tmep, int pid)
-{
-	int i = ft_strlen(tmep) - 1;
-
-	while (i >= 0)
-	{
-		if (tmep[i] == '1')
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		i--;
-		usleep(100);
-	}
-}
-
-void	sendasbitsredux(char *argv, int pid)
-{
-	int		i;
-	int		j;
-	char 	*temp;
-	char 	toconvert;
-
-	g_signalreceived = 1;
-	i = 0;
-	temp = (char *)malloc(9);
-	ft_bzero(temp, 9);
-	while (argv[i])
-	{
-		j = 0;
-		toconvert = argv[i];
-		while (j < 8)
-		{
-			temp[j] = (toconvert % 2) + '0';
-			toconvert /= 2;
-			j++;
-		}
-		signalsend (temp, pid);
-		i++;
-	}
-	free(temp);
-}
-
-void	handler(int signal)
-{
-	if (signal == 10)
-	{
-		write(1, "message recieved", 17);
-		g_signalreceived = 1;
-	}
-	//exit(EXIT_SUCCESS);
 }
 
 int	main(int argc, char **argv)
 {
-	struct sigaction sa;
-	__pid_t pid;
-
-	ft_bzero(&sa, sizeof(sa));
-	sa.sa_handler = &handler;
+	__pid_t	pid;
 
 	if (argc != 3 || charchecker(argv[1]) != 1)
-	 	return (0);
+		return (0);
 	pid = ft_atoi(argv[1]);
-	//kill(pid, SIGUSR1);
-	sigaction(10, &sa, NULL);
-	sendasbits(argv[2], pid, sa);
-	sleep(1);
-	//sendasbitsredux(argv[2], pid);
+	sendasbits(argv[2], pid);
 }
