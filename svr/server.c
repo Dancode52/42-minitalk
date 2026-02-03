@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
+/*   Updated: 2026/02/03 13:56:19 by dlanehar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../Headers/server.h"
 
@@ -9,8 +20,6 @@ char	*create_char(int signum, int *zerocount, int *bits)
 	char		*res;
 
 	res = NULL;
-	if (*bits == 0)
-		c = 0;
 	c <<= 1;
 	if (signum == SIGUSR1)
 	{
@@ -26,69 +35,74 @@ char	*create_char(int signum, int *zerocount, int *bits)
 	if (*bits == 8)
 	{
 		res = ft_calloc(2, sizeof(char));
+		if (!res)
+			return (NULL);
 		res[0] = c;
+		c = 0;
 	}
 	return (res);
 }
 
-char	*create_string(int	signum)
+// char	*copy_and_add(char	c, char	*string)
+// {
+// 	char	*temp;
+// 	int		len;
+
+// 	len = ft_strlen(string);
+// 	temp = ft_calloc(len + 2, sizeof(char));
+// 	if (!temp)
+// 		return (NULL);
+// 	ft_strlcpy(temp, string, len);
+// }
+
+char	*create_string(int signum)
 {
 	static int	zerocount;
 	static int	bits;
-	char 		*c;
+	char		*c;
 	char		*temp;
 
-	temp = NULL;
 	c = create_char(signum, &zerocount, &bits);
 	if (bits == 8)
 	{
 		temp = ft_strjoin(g_string, c);
-		if (g_string && ft_strnstr(temp, g_string, ft_strlen(temp)))
-		{
+		if (!temp)
+			return (NULL);
+		if (g_string)
 			free(g_string);
-			g_string = NULL;
-		}
-		g_string = ft_strdup(temp);
-		free(temp);
+		g_string = temp;
 		free(c);
 		bits = 0;
 		if (zerocount != 8)
 			zerocount = 0;
 	}
-	if (zerocount == 8 && bits == 0)
-	{
+	if (!(zerocount == 8 && bits == 0))
+		return (NULL);
+	else
 		zerocount = 0;
-		return (g_string);
-	}
-	return (NULL);
-}
-
-void	print_string(int signum)
-{
-	char	*string;
-
-	string = create_string(signum);
-	if (!string)
-		return ;
-	ft_putendl_fd(string, 1);
-	free(g_string);
-	g_string = NULL;
-	string = NULL;
-	return ;
+	return (g_string);
 }
 
 void	handler(int signum, siginfo_t *info, void *ucontext_t)
 {
 	(void)ucontext_t;
 
-	print_string(signum);
+	if (!create_string(signum))
+	{
+		kill(info->si_pid, SIGUSR1);
+		return ;
+	}
+	ft_putendl_fd(g_string, 1);
+	free(g_string);
+	g_string = NULL;
 	kill(info->si_pid, SIGUSR1);
+	return ;
 }
 
-int	main()
+int	main(void)
 {
-	__pid_t 		pid;
-	struct sigaction sa;
+	__pid_t				pid;
+	struct sigaction	sa;
 
 	ft_bzero(&sa, sizeof(sa));
 	pid = getpid();
@@ -105,4 +119,3 @@ int	main()
 		pause();
 	}
 }
-
