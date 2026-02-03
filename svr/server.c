@@ -6,7 +6,7 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/03 13:56:19 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/03 14:05:22 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,6 @@ char	*create_char(int signum, int *zerocount, int *bits)
 	return (res);
 }
 
-// char	*copy_and_add(char	c, char	*string)
-// {
-// 	char	*temp;
-// 	int		len;
-
-// 	len = ft_strlen(string);
-// 	temp = ft_calloc(len + 2, sizeof(char));
-// 	if (!temp)
-// 		return (NULL);
-// 	ft_strlcpy(temp, string, len);
-// }
-
 char	*create_string(int signum)
 {
 	static int	zerocount;
@@ -86,7 +74,6 @@ char	*create_string(int signum)
 void	handler(int signum, siginfo_t *info, void *ucontext_t)
 {
 	(void)ucontext_t;
-
 	if (!create_string(signum))
 	{
 		kill(info->si_pid, SIGUSR1);
