@@ -1,51 +1,59 @@
-CFILESSERV = server.c
-CFILESCLIENT = client.c
-
-OBJDIR = ./obj
-OFILESSERV = $(CFILES:./svr/%.c=$(OBJDIR)/%.o)
-OFILESCLIENT = $(CFILES:./clt/%.c=$(OBJDIR)/%.o)
-CFLAGS = -Wall -Werror -Wextra -g
-CC = cc
+SVR_NAME    := server
+CLT_NAME	:= client
 LIBFT = libft.a
-NAMESERV = server
-NAMECLIENT = client
 
-all: $(NAMESERV) $(NAMECLIENT)
+CC			:= cc
+CFLAGS		:= -Wall -Wextra -Werror
 
-makeserver: $(NAMESERV)
+SVR_DIR := ./svr
+SVR_SRC := server.c
+SVR_BONUS_SRC := server_bonus.c
 
-makeclient: $(NAMECLIENT)
+CLT_DIR := ./clt
+CLT_SRC := client.c
+CLT_BONUS_SRC := client_bonus.c
 
-directory:
-	@if ! [ -d $(OBJDIR) ]; then mkdir -p $(OBJDIR);\
-	fi
+OBJ_DIR := ./obj
+SVR_OBJ := $(SVR_SRC:.c=.o)
+CLT_OBJ := $(CLT_SRC:.c=.o)
+
+SVR_SRCS := $(addprefix $(SVR_DIR)/, $(SVR_SRC))
+SVR_OBJS := $(addprefix $(OBJ_DIR)/, $(SVR_OBJ))
+
+CLT_SRCS := $(addprefix $(CLT_DIR)/, $(CLT_SRC))
+CLT_OBJS := $(addprefix $(OBJ_DIR)/, $(CLT_OBJ))
+
+all: build_server build_client
+
+$(LIBFT):
+	$(MAKE) bonus -C libft/42-Libft
+
+build_server: $(LIBFT) $(SVR_NAME)
+
+$(SVR_NAME): $(SVR_OBJS)
+	$(CC) $(CFLAGS) $(SVR_OBJS) -o $(SVR_NAME) $(LIBFT)
+
+$(OBJ_DIR)/%.o: $(SVR_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build_client: $(LIBFT) $(CLT_NAME)
+
+$(CLT_NAME): $(CLT_OBJS)
+	$(CC) $(CFLAGS) $(CLT_OBJS) -o $(CLT_NAME) $(LIBFT)
+
+$(OBJ_DIR)/%.o: $(CLT_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(NAME)
-	@rm -rf $(OFILES)
-	@$(MAKE) clean -C libft/42-Libft
-	@if [ -d $(OBJDIR) ]; then rmdir $(OBJDIR); \
-	fi
+	$(MAKE) clean -C libft/42-Libft
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
-	@echo "Look at us go! Taking a sledgehammer to your very delicate work!"
-	@rm -f $(NAMESERV) $(NAMECLIENT)
-	@$(MAKE) fclean -C libft/42-Libft
+	rm -f $(SVR_NAME) $(CLT_NAME)
+	$(MAKE) fclean -C libft/42-Libft
 
 re: fclean all
 
-
-$(NAMESERV): directory $(OFILESSERV)
-	@$(MAKE) bonus -C libft/42-Libft
-	@$(CC) $(CFLAGS) ./svr/$(CFILESSERV) -o $(NAMESERV) $(LIBFT)
-	@echo "Look at us go! Making your project with our silly little techno-gremlin hands!"
-
-$(NAMECLIENT): directory $(OFILESCLIENT)
-	@$(MAKE) bonus -C libft/42-Libft
-	@$(CC) $(CFLAGS) ./clt/$(CFILESCLIENT) -o $(NAMECLIENT) $(LIBFT)
-	@echo "Look at us go! Making your project with our silly little techno-gremlin hands!"
-
-$(OBJDIR)/%.o : %.c
-	@$(CC) $(CFLAGS) -o $@ -c $<
-
-.PHONY:  re fclean clean bonus all
+.PHONY: all clean fclean re

@@ -17,23 +17,20 @@ NAME_BONUS = ../../libft.a
 
 all: $(NAME)
 
-directory:
-	@if ! [ -d $(OBJDIR) ]; then mkdir -p $(OBJDIR);\
-	fi
-
-bonus:	$(OFILES) $(BONUS_OFILES)
+bonus: directory $(OFILES) $(BONUS_OFILES)
 	@ar rcs $(NAME) $(OFILES) $(BONUS_OFILES)
 
 clean:
 	@rm -rf $(OFILES) $(BONUS_OFILES)
 	@rm -rf $(OFILES)
-	@if [ -d $(OBJDIR) ]; then rmdir $(OBJDIR); \
-	fi
 
 fclean: clean
 	@rm -f $(NAME)
 
 re: fclean $(NAME)
+
+directory:
+	mkdir -p $(OBJDIR)
 
 $(NAME): directory $(OFILES)
 	@ar rcs $(NAME) $(OFILES)
