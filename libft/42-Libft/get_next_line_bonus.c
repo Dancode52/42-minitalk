@@ -6,12 +6,11 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 08:56:50 by dlanehar          #+#    #+#             */
-/*   Updated: 2025/12/23 14:58:02 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/05 10:31:17 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Headers/get_next_line_bonus.h"
-#include <stdio.h>
 
 static char	*fill_storage(char *buf, char **store, int fd)
 {
