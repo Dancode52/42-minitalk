@@ -29,22 +29,26 @@ CLT_OBJS := $(addprefix ./$(CLT_OBJ_DIR)/, $(CLT_OBJ))
 
 all: build_server build_client
 
-build_server: $(LIBFT) $(SVR_NAME)
+build_server: $(LIBFT) $(SVR_OBJ_DIR) $(SVR_NAME)
+
+$(SVR_OBJ_DIR):
+	mkdir -p ./$(SVR_OBJ_DIR)
 
 $(SVR_NAME): $(SVR_OBJS)
 	$(CC) $(CFLAGS) $(SVR_OBJS) -o $(SVR_NAME) $(LIBFT)
 
 ./$(SVR_OBJ_DIR)/%.o: $(SVR_DIR)/%.c
-	mkdir -p ./$(SVR_OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-build_client: $(LIBFT) $(CLT_NAME)
+build_client: $(LIBFT) $(CLT_OBJ_DIR) $(CLT_NAME)
+
+$(CLT_OBJ_DIR):
+	mkdir -p ./$(CLT_OBJ_DIR)
 
 $(CLT_NAME): $(CLT_OBJS)
 	$(CC) $(CFLAGS) $(CLT_OBJS) -o $(CLT_NAME) $(LIBFT)
 
 ./$(CLT_OBJ_DIR)/%.o: $(CLT_DIR)/%.c
-	mkdir -p ./$(CLT_OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT):
