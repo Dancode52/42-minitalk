@@ -3,7 +3,7 @@ CLT_NAME	:= client
 LIBFT = libft.a
 
 CC			:= cc
-CFLAGS		:= -Wall -Wextra -Werror
+CFLAGS		:= -Wall -Wextra -Werror -g
 
 SVR_DIR := svr
 SVR_SRC := server.c

@@ -6,20 +6,22 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/03 14:32:35 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/05 17:39:31 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Headers/server.h"
 
-char	*g_string;
+//char	*g_string;
 
-char	*create_char(int signum, int *zerocount, int *bits)
+char	create_char(int signum, int *zerocount, int *bits)
 {
-	static char	c;
-	char		*res;
+	static char	c = 0;
+	//char		*res;
 
-	res = NULL;
+	//res = NULL;
+	if (*bits == 0)
+		c = 0;
 	c <<= 1;
 	if (signum == SIGUSR1)
 	{
@@ -32,57 +34,75 @@ char	*create_char(int signum, int *zerocount, int *bits)
 		*zerocount += 1;
 	}
 	*bits += 1;
-	if (*bits == 8)
+	return (c);
+}
+size_t	ft_herestrlen(char *s)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s || s[0] == '\0')
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
+#include <stdio.h>
+void	appendletter(char **string, char c)
+{
+	int		len;
+	int		i;
+	char	*temp;
+
+	len = ft_herestrlen(*string);
+	i = 0;
+	temp = malloc(len + 2);
+	while ((*string)[i])
 	{
-		res = ft_calloc(2, sizeof(char));
-		if (!res)
-			return (NULL);
-		res[0] = c;
-		c = 0;
+		temp[i] = (*string)[i];
+		i++;
 	}
-	return (res);
+	temp[i] = c;
+	temp[i + 1] = 0;
+	free(*string);
+	*string = temp;
+	//return (temp);
 }
 
-char	*create_string(int signum)
+int	create_string(int signum, char **string)
 {
 	static int	zerocount;
 	static int	bits;
-	char		*c;
-	char		*temp;
+	char		c;
 
+	if (!*string)
+		*string = ft_strdup("");
 	c = create_char(signum, &zerocount, &bits);
 	if (bits == 8)
 	{
-		temp = ft_strjoin(g_string, c);
-		if (!temp)
-			return (NULL);
-		if (g_string)
-			free(g_string);
-		g_string = temp;
-		free(c);
+		appendletter(string, c);
 		bits = 0;
-		if (zerocount != 8)
-			zerocount = 0;
+		if (c == 0)
+			return (1);
 	}
-	if (!(zerocount == 8 && bits == 0))
-		return (NULL);
-	else
-		zerocount = 0;
-	return (g_string);
+	return (0);
 }
 
 void	handler(int signum, siginfo_t *info, void *ucontext_t)
 {
 	(void)ucontext_t;
-	if (!create_string(signum))
+	(void)info;
+	static char	*string = NULL;
+
+	if (!create_string(signum, &string))
 	{
-		kill(info->si_pid, SIGUSR1);
+		//kill(info->si_pid, SIGUSR1);
 		return ;
 	}
-	ft_putendl_fd(g_string, 1);
-	free(g_string);
-	g_string = NULL;
-	kill(info->si_pid, SIGUSR1);
+	ft_putendl_fd(string, 1);
+	free(string);
+	string = NULL;
+	//kill(info->si_pid, SIGUSR1);
 	return ;
 }
 

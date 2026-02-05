@@ -6,7 +6,7 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:05:31 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/03 14:15:24 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/05 17:39:46 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	sendasbits(char *string, int pid)
 			else
 				kill(pid, SIGUSR2);
 			bits++;
-			sleep(1);
+			usleep(600);
 		}
 		i++;
 	}
