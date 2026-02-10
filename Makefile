@@ -7,11 +7,9 @@ CFLAGS		:= -Wall -Wextra -Werror -g
 
 SVR_DIR := svr
 SVR_SRC := server.c
-SVR_BONUS_SRC := server_bonus.c
 
 CLT_DIR := clt
 CLT_SRC := client.c
-CLT_BONUS_SRC := client_bonus.c
 
 OBJ_DIR := obj
 

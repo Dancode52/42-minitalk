@@ -6,20 +6,18 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:00:40 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/03 14:05:34 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/10 10:40:05 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Headers/server.h"
 
-char	*g_string;
-
-char	*create_char(int signum, int *zerocount, int *bits)
+char	create_char(int signum, int *zerocount, int *bits)
 {
-	static char	c;
-	char		*res;
+	static char	c = 0;
 
-	res = NULL;
+	if (*bits == 0)
+		c = 0;
 	c <<= 1;
 	if (signum == SIGUSR1)
 	{
@@ -32,57 +30,69 @@ char	*create_char(int signum, int *zerocount, int *bits)
 		*zerocount += 1;
 	}
 	*bits += 1;
-	if (*bits == 8)
-	{
-		res = ft_calloc(2, sizeof(char));
-		if (!res)
-			return (NULL);
-		res[0] = c;
-		c = 0;
-	}
-	return (res);
+	return (c);
 }
 
-char	*create_string(int signum)
+void	appendletter(char **string, char c)
+{
+	int		len;
+	int		i;
+	char	*temp;
+
+	len = ft_strlen(*string);
+	i = 0;
+	temp = malloc(len + 2);
+	while ((*string)[i])
+	{
+		temp[i] = (*string)[i];
+		i++;
+	}
+	temp[i] = c;
+	temp[i + 1] = 0;
+	free(*string);
+	*string = temp;
+}
+
+int	create_string(int signum, char **string)
 {
 	static int	zerocount;
 	static int	bits;
-	char		*c;
-	char		*temp;
+	char		c;
 
+	if (!*string)
+		*string = ft_strdup("");
 	c = create_char(signum, &zerocount, &bits);
 	if (bits == 8)
 	{
-		temp = ft_strjoin(g_string, c);
-		if (!temp)
-			return (NULL);
-		if (g_string)
-			free(g_string);
-		g_string = temp;
-		free(c);
+		appendletter(string, c);
 		bits = 0;
-		if (zerocount != 8)
-			zerocount = 0;
+		if (c == 0)
+			return (1);
 	}
-	if (!(zerocount == 8 && bits == 0))
-		return (NULL);
-	else
-		zerocount = 0;
-	return (g_string);
+	return (0);
 }
 
 void	handler(int signum, siginfo_t *info, void *ucontext_t)
 {
+	static char	*string = NULL;
+	static int	pid = 0;
+
 	(void)ucontext_t;
-	if (!create_string(signum))
+	if (!pid)
+		pid = info->si_pid;
+	if (info->si_pid == pid)
 	{
+		if (!create_string(signum, &string))
+		{
+			kill(info->si_pid, SIGUSR1);
+			return ;
+		}
+		ft_putendl_fd(string, 1);
+		free(string);
+		string = NULL;
 		kill(info->si_pid, SIGUSR1);
-		return ;
+		pid = 0;
 	}
-	ft_putendl_fd(g_string, 1);
-	free(g_string);
-	g_string = NULL;
-	kill(info->si_pid, SIGUSR1);
 	return ;
 }
 

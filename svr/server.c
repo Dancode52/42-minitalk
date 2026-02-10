@@ -6,20 +6,16 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/05 17:39:31 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/10 10:39:54 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Headers/server.h"
 
-//char	*g_string;
-
 char	create_char(int signum, int *zerocount, int *bits)
 {
 	static char	c = 0;
-	//char		*res;
 
-	//res = NULL;
 	if (*bits == 0)
 		c = 0;
 	c <<= 1;
@@ -36,25 +32,14 @@ char	create_char(int signum, int *zerocount, int *bits)
 	*bits += 1;
 	return (c);
 }
-size_t	ft_herestrlen(char *s)
-{
-	size_t	i;
 
-	i = 0;
-	if (!s || s[0] == '\0')
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
-#include <stdio.h>
 void	appendletter(char **string, char c)
 {
 	int		len;
 	int		i;
 	char	*temp;
 
-	len = ft_herestrlen(*string);
+	len = ft_strlen(*string);
 	i = 0;
 	temp = malloc(len + 2);
 	while ((*string)[i])
@@ -66,7 +51,6 @@ void	appendletter(char **string, char c)
 	temp[i + 1] = 0;
 	free(*string);
 	*string = temp;
-	//return (temp);
 }
 
 int	create_string(int signum, char **string)
@@ -90,19 +74,25 @@ int	create_string(int signum, char **string)
 
 void	handler(int signum, siginfo_t *info, void *ucontext_t)
 {
-	(void)ucontext_t;
-	(void)info;
 	static char	*string = NULL;
+	static int	pid = 0;
 
-	if (!create_string(signum, &string))
+	(void)ucontext_t;
+	if (!pid)
+		pid = info->si_pid;
+	if (info->si_pid == pid)
 	{
-		//kill(info->si_pid, SIGUSR1);
-		return ;
+		if (!create_string(signum, &string))
+		{
+			kill(info->si_pid, SIGUSR1);
+			return ;
+		}
+		ft_putendl_fd(string, 1);
+		free(string);
+		string = NULL;
+		kill(info->si_pid, SIGUSR1);
+		pid = 0;
 	}
-	ft_putendl_fd(string, 1);
-	free(string);
-	string = NULL;
-	//kill(info->si_pid, SIGUSR1);
 	return ;
 }
 
