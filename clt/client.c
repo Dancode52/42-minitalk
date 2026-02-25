@@ -6,11 +6,11 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:05:31 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/10 10:13:39 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/16 09:47:38 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../Headers/server.h"
+#include "../headers/server.h"
 
 int	charchecker(char *check)
 {

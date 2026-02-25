@@ -1,15 +1,15 @@
 SVR_NAME    := server
 CLT_NAME	:= client
-LIBFT = libft.a
+LIBFT = my_libft/libft.a
 
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -g
 
 SVR_DIR := svr
-SVR_SRC := server.c
+SVR_SRC := server_bonus.c
 
 CLT_DIR := clt
-CLT_SRC := client.c
+CLT_SRC := client_bonus.c
 
 OBJ_DIR := obj
 
@@ -50,15 +50,15 @@ $(CLT_NAME): $(CLT_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT):
-	$(MAKE) bonus -C libft/42-Libft
+	$(MAKE) bonus -C my_libft
 
 clean:
-	$(MAKE) clean -C libft/42-Libft
+	$(MAKE) clean -C my_libft
 	rm -rf ./$(OBJ_DIR)
 
 fclean: clean
 	rm -f $(SVR_NAME) $(CLT_NAME)
-	$(MAKE) fclean -C libft/42-Libft
+	$(MAKE) fclean -C my_libft
 
 re: fclean all
 

@@ -6,11 +6,11 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 08:59:34 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/10 10:39:54 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/16 09:47:17 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../Headers/server.h"
+#include "../headers/server.h"
 
 char	create_char(int signum, int *zerocount, int *bits)
 {
@@ -90,8 +90,8 @@ void	handler(int signum, siginfo_t *info, void *ucontext_t)
 		ft_putendl_fd(string, 1);
 		free(string);
 		string = NULL;
-		kill(info->si_pid, SIGUSR1);
 		pid = 0;
+		kill(info->si_pid, SIGUSR1);
 	}
 	return ;
 }

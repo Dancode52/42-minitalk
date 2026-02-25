@@ -6,11 +6,13 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:15:31 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/10 10:37:05 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/25 09:42:16 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../Headers/server.h"
+#include "../headers/server.h"
+
+int	g_ack = 0;
 
 int	charchecker(char *check)
 {
@@ -29,7 +31,13 @@ int	charchecker(char *check)
 
 void	handler(int signum)
 {
-	(void)signum;
+	if (signum == SIGUSR1)
+		g_ack = 1;
+	if (signum == SIGUSR2)
+	{
+		write(1, "Message sent succesfully\n", 25);
+		g_ack = 0;
+	}
 	return ;
 }
 
@@ -39,6 +47,7 @@ void	init_sigaction_struct(struct sigaction *structname)
 	(*structname).sa_handler = &handler;
 	sigemptyset(&(*structname).sa_mask);
 	sigaction(SIGUSR1, &(*structname), NULL);
+	sigaction(SIGUSR2, &(*structname), NULL);
 }
 
 void	sendasbits(char *string, int pid)
@@ -60,8 +69,11 @@ void	sendasbits(char *string, int pid)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
+			while (!g_ack)
+				pause();
+			g_ack = 0;
 			bits++;
-			sleep(1);
+			usleep(380);
 		}
 		i++;
 	}
