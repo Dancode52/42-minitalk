@@ -6,7 +6,7 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:05:31 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/16 09:47:38 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/28 14:23:58 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,30 +27,14 @@ int	charchecker(char *check)
 	return (1);
 }
 
-void	handler(int signum)
-{
-	(void)signum;
-	return ;
-}
-
-void	init_sigaction_struct(struct sigaction *structname)
-{
-	ft_bzero(&(*structname), sizeof((*structname)));
-	(*structname).sa_handler = &handler;
-	sigemptyset(&(*structname).sa_mask);
-	sigaction(SIGUSR1, &(*structname), NULL);
-}
-
 void	sendasbits(char *string, int pid)
 {
 	int					i;
 	int					len;
-	struct sigaction	sa;
 	int					bits;
 
 	i = 0;
 	len = ft_strlen(string);
-	init_sigaction_struct(&sa);
 	while (i <= len)
 	{
 		bits = 0;
@@ -61,7 +45,7 @@ void	sendasbits(char *string, int pid)
 			else
 				kill(pid, SIGUSR2);
 			bits++;
-			sleep(1);
+			usleep(380);
 		}
 		i++;
 	}

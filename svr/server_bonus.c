@@ -6,34 +6,13 @@
 /*   By: dlanehar <dlanehar@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 09:00:40 by dlanehar          #+#    #+#             */
-/*   Updated: 2026/02/25 09:30:08 by dlanehar         ###   ########.fr       */
+/*   Updated: 2026/02/28 14:26:45 by dlanehar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/server.h"
 
 char g_gchar = 0;
-
-// char	create_char(int signum, int *zerocount, int *bits)
-// {
-// 	static char	c = 0;
-
-// 	if (*bits == 0)
-// 		c = 0;
-// 	c <<= 1;
-// 	if (signum == SIGUSR1)
-// 	{
-// 		c |= 1;
-// 		*zerocount = 0;
-// 	}
-// 	else if (signum == SIGUSR2)
-// 	{
-// 		c |= 0;
-// 		*zerocount += 1;
-// 	}
-// 	*bits += 1;
-// 	return (c);
-// }
 
 void	appendletter(char **string)
 {
